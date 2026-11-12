@@ -18,27 +18,45 @@ local genv = if type(getgenv) == 'function' then getgenv() else nil
 local httpget = fenv.httpget
 local wally
 
-if type(httpget) == 'function' then
-    if genv then
-        local v = genv.ObbyScriptWindow
-        if v ~= nil then v.object:Destroy() end 
-        if genv.WallyUI ~= nil then wally = genv.WallyUI end
-    else
-        local s, r = pcall(httpget, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua')
-        local f = if s then loadstring(r) else nil
-        if type(f) == 'function' then
-            wally = f()
-            if genv then
-                genv.WallyUI = wally
-            end
-        end
-    end
+if genv then
+	local oldWindow = genv.ObbyScriptWindow
+	if oldWindow ~= nil then
+		oldWindow.object:Destroy()
+	end
+
+	local oldConn = genv.ObbyScriptConnection
+	if oldConn then
+		oldConn:Disconnect()
+		genv.ObbyScriptConnection = nil
+	end
+
+	if genv.WallyUI ~= nil then
+		wally = genv.WallyUI
+	end
+end
+
+if type(httpget) == 'function' and not wally then
+	local s, r = pcall(httpget, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua')
+	local f = if s then loadstring(r) else nil
+	if type(f) == 'function' then
+		wally = f()
+		if genv then
+			genv.WallyUI = wally
+		end
+	end
 end
 
 local hui
 local gethui = fenv.gethui
-if type(gethui) == 'function' then hui = gethui() else hui = game:GetService('CoreGui') end
-if type(wally) ~= 'table' then return error('wally is missing or has moved') end
+if type(gethui) == 'function' then
+	hui = gethui()
+else
+	hui = game:GetService('CoreGui')
+end
+
+if type(wally) ~= 'table' then
+	return error('wally is missing or has moved')
+end
 
 local window = wally:CreateWindow('A Simple Obby', { Parent = hui })
 window:Label('<b>Essentials</b>', true)
@@ -50,9 +68,14 @@ window:Toggle('Auto Skip Stages', {
 	AutoSkipStages = v
 end)
 
-local runstep; runstep = RunService.RenderStepped:Connect(function()
+local runstep
+runstep = RunService.RenderStepped:Connect(function()
 	if typeof(window.object) ~= 'Instance' then
-		return runstep:Disconnect()
+		runstep:Disconnect()
+		if genv then
+			genv.ObbyScriptConnection = nil
+		end
+		return
 	end
 
 	if AutoSkipStages then
@@ -69,10 +92,9 @@ local runstep; runstep = RunService.RenderStepped:Connect(function()
 			end
 		end
 	end
-
-	return
 end)
 
 if genv then
 	genv.ObbyScriptWindow = window
+	genv.ObbyScriptConnection = runstep
 end
