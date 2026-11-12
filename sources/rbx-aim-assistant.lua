@@ -4,8 +4,9 @@
     https://github.com/forka42
 ]=]
 
-if type(getgenv) ~= 'function' then return end
-local env = getgenv()
+local fenv = getfenv()
+if type(fenv.getgenv) ~= 'function' then return end
+local env = fenv.getgenv()
 local stop_aim_assistant = rawget(env, 'stop_aim_assistant')
 if type(stop_aim_assistant) == 'function' then pcall(stop_aim_assistant) end
 assert(type(env) == 'table', 'aim-assistant.lua: failed to get environment')
@@ -13,8 +14,8 @@ local insert = rawget(table, 'insert')
 assert(type(insert) == 'function', 'aim-assistant.lua: failed to get insert')
 assert(_VERSION == 'Luau', 'aim-assistant.lua: failed to get _VERSION')
 
-local instances = {}
-local connections = {}
+local instances = {} :: { [number]: Instance }?
+local connections = {} :: { [number]: RBXScriptConnection }?
 
 local function connect(signal, callback)
     local connection = signal:Connect(callback)
@@ -59,11 +60,10 @@ local ignoret = type(table.find({
 local v2 = Vector2.new
 local c3u = Color3.fromRGB
 
-local rbxclass = game.IsA
 local rbxchild = game.FindFirstChild
 local rbxclasschild = game.FindFirstChildWhichIsA
 local rbxdescendant = game.IsDescendantOf
-local coregui = type(gethui) == 'function' and gethui() or service("CoreGui")
+local coregui = type(fenv.gethui) == 'function' and fenv.gethui() or service("CoreGui")
 
 local ui = Instance.new("ScreenGui")
 ui.ResetOnSpawn = false
@@ -87,7 +87,7 @@ ui_domainlabel.Name = "ui_domainlabel"
 ui_domainlabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
 ui_domainlabel.TextColor3 = Color3.new(1, 1, 1)
 ui_domainlabel.TextTransparency = 0.8
-ui_domainlabel.Text = "(c) 2022 upvaluedump"
+ui_domainlabel.Text = "(c) 2022 forka42"
 ui_domainlabel.BackgroundColor3 = Color3.new(1, 1, 1)
 ui_domainlabel.AnchorPoint = Vector2.new(0.5, 1)
 ui_domainlabel.BackgroundTransparency = 1
@@ -475,12 +475,6 @@ local function chain_raycast(worldroot, rayobject, ignorelist)
     return nil
 end
 
-local function raycast(worldroot, rayobject, ignorelist)
-    local origin, direction = rayobject.origin, rayobject.direction
-    params.FilterDescendantsInstances = type(ignorelist) == 'table' and ignorelist or nil
-    return worldroot:Raycast(origin, direction, params).Instance
-end
-
 local color_scheme = {}
 color_scheme['nearest'] = c3u(0, 172, 255)
 color_scheme['valid'] = c3u(38, 255, 99)
@@ -500,8 +494,8 @@ spawn(function()
     env.droppingerrors = true
     while true do
         for _, c in pairs({
-            unpack( getconnections(game:GetService('LogService').MessageOut) ),
-            unpack( getconnections(game:GetService("ScriptContext").Error) )
+            unpack( fenv.getconnections(game:GetService('LogService').MessageOut) ),
+            unpack( fenv.getconnections(game:GetService("ScriptContext").Error) )
         }) do
             c:Disable()
         end
@@ -534,7 +528,7 @@ local key = { f6 = Enum.KeyCode.F6 }
 spawn(function()
     if not table.find(pfexperiences, game.PlaceId) then return end
     phantomforces = true
-    run_on_thread(getactorthreads()[1], [==[
+    fenv.run_on_thread(fenv.getactorthreads()[1], [==[
         local ri = getrenv().shared.require('ReplicationInterface')
         local operateOnAllEntries = ri.operateOnAllEntries
         game:GetService("RunService").Stepped:Connect(function()
@@ -636,7 +630,7 @@ local function get_team_ident(player)
 end
 
 local function can_track(player, character)
-    if typeof(player) == 'Instance' and rbxclass(player, "Model") then
+    if typeof(player) == 'Instance' and player:IsA('Model') then
         character = player
         player = players:GetPlayerFromCharacter(character)
     end
@@ -754,7 +748,7 @@ local function get_nearest_character(current_target)
                 break
             end
         end
-        local head = rbxchild(character, 'Head')
+        local head = rbxchild(character, 'Head') :: BasePart?
         if phantomforces then
             for _, p in pairs(character:GetChildren()) do
                 if p:IsA('BasePart') then
@@ -766,7 +760,7 @@ local function get_nearest_character(current_target)
                 end
             end
         end
-        if typeof(head) == 'Instance' and rbxclass(head, 'BasePart') then
+        if typeof(head) == 'Instance' and head:IsA('BasePart') then
             local screen_position, on_screen = currentcamera:WorldToScreenPoint(head.Position)
             local screen_distance = (v2(playermouse.X, playermouse.Y) - v2(screen_position.X, screen_position.Y))
                 .Magnitude
