@@ -7,14 +7,13 @@
 ---@diagnostic disable: undefined-global
 math.randomseed(tick())
 
-if type(getgenv) ~= 'function' then
+local fenv = getfenv()
+if type(fenv.getgenv) ~= 'function' then
 	return
 end
 
-local GlobalEnvironment = getgenv()
-
+local GlobalEnvironment = fenv.getgenv()
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 
 if type(GlobalEnvironment) == 'table' then
 	local LocalPlayer = Players.LocalPlayer
@@ -23,13 +22,14 @@ if type(GlobalEnvironment) == 'table' then
 		Development = false,
 		LoadUI = true,
 	}
+	local httpget = fenv.httpget
 
 	local Splix
 	if InternalSettings.LoadUI then
 		if InternalSettings.Development then
 			Splix = require(script:WaitForChild("Splix")); GlobalEnvironment.Splix = Splix
 		else
-			local http_success, http_response = pcall(game.HttpGet, game, 'https://raw.githubusercontent.com/matas3535/SplixPrivateDrawingLibrary/main/Library.lua')
+			local http_success, http_response = pcall(httpget, 'https://raw.githubusercontent.com/matas3535/SplixPrivateDrawingLibrary/main/Library.lua')
 			if http_success == true and type(http_response) == 'string' then
 				local callback = select(2, pcall(loadstring, http_response))
 				if type(callback) == 'function' then
@@ -39,13 +39,13 @@ if type(GlobalEnvironment) == 'table' then
 		end
 	end
 
-	local hasclipboard = type(setclipboard) == 'function'
+	local hasclipboard = type(fenv.setclipboard) == 'function'
 
 	pcall(function() GlobalEnvironment.AC6F.GlitchConnection:Disconnect() end)
 	pcall(function() GlobalEnvironment.AC6F.HackConnection:Disconnect() end)
 	local AC6F = {}
-	if GlobalEnvironment.FireServer and type(hookfunction) == 'function' then
-		hookfunction(Instance.new("RemoteEvent").FireServer, GlobalEnvironment.FireServer)
+	if GlobalEnvironment.FireServer and type(fenv.hookfunction) == 'function' then
+		fenv.hookfunction(Instance.new("RemoteEvent").FireServer, GlobalEnvironment.FireServer)
 	end
 	GlobalEnvironment.FireServer = Instance.new("RemoteEvent").FireServer
 	GlobalEnvironment.AC6F = AC6F

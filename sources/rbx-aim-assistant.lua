@@ -642,7 +642,7 @@ local function can_track(player, character)
     return ffa or get_team_ident(player) ~= get_team_ident(localplayer)
 end
 
-local content = {}
+local content = {} :: { [any]: any }
 local highlight = {}
 highlight.__index = highlight
 

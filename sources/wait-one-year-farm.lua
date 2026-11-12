@@ -42,10 +42,10 @@ local interval = 0.5
 local timer = 0
 
 RunService.RenderStepped:Connect(function(deltaTime)
-    timer = timer + deltaTime
+    timer += deltaTime
 
     if timer >= interval then
-        timer = timer - interval
+        timer -= interval
         if AutoCompleteObby then
             local Character = LocalPlayer.Character
             local WinPart = WinParts[(step - 1) % #WinParts + 1]

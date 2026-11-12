@@ -8,8 +8,16 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local WallyLibraryV2 = loadstring(game:HttpGet("https://raw.githubusercontent.com/forka42/legacy-scripts/refs/heads/main/lib/wally-modified.lua", true))()
-local GPEService = loadstring(game:HttpGet("https://raw.githubusercontent.com/forka42/legacy-scripts/refs/heads/main/lib/gpe-service.lua", true))()
+
+local httpget = getfenv().httpget
+local s, r = pcall(httpget, game, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua', true)
+local f; if s then f = loadstring(r) else return error(r) end
+if type(f) == 'function' then WallyLibraryV2 = f() end
+local s, r = pcall(httpget, game, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/gpe-service.lua', true)
+local f; if s then f = loadstring(r) else return error(r) end
+if type(f) == 'function' then GPEService = f() end
+assert(WallyLibraryV2 and GPEService)
+
 local __applyCustom = function(GuiObject)
     coroutine.resume(
         coroutine.create(
@@ -59,9 +67,7 @@ default = {
 }
 WallyLibraryV2["options"] = setmetatable({}, {__index = default})
 local LocalPlayer = Players.LocalPlayer
-local PlayerGui =
-    (RunService:IsStudio() and LocalPlayer:FindFirstChildWhichIsA("PlayerGui")) or game:GetService("CoreGui")
-local PlayerMouse = LocalPlayer:GetMouse()
+local PlayerGui = (RunService:IsStudio() and LocalPlayer:FindFirstChildWhichIsA("PlayerGui")) or game:GetService("CoreGui")
 local Windows = {[1] = (function()
         local Window = WallyLibraryV2:CreateWindow("AC6F", {["Parent"] = PlayerGui})
         __applyCustom(Window)
@@ -69,29 +75,24 @@ local Windows = {[1] = (function()
     end)()}
 Slider = Windows[1]:Slider("Speed", {["flag"] = "max_speed", ["min"] = 50, ["max"] = 800})
 Slider:Set(400)
-TextBox =
-    Windows[1]:Box(
-    "KeyCode",
-    {["flag"] = "activation_key"},
-    function(value)
-        for _, EnumItem in pairs(Enum.KeyCode:GetEnumItems()) do
-            if string.lower(value) == string.lower(EnumItem.Name) then
-                TextBox.Text = EnumItem.Name
-                Windows[1]["flags"]["activation_key"] = EnumItem
-                return
-            end
+local TextBox; TextBox = Windows[1]:Box("KeyCode", {["flag"] = "activation_key"}, function(value)
+    for _, EnumItem in pairs(Enum.KeyCode:GetEnumItems()) do
+        if string.lower(value) == string.lower(EnumItem.Name) then
+            TextBox.Text = EnumItem.Name
+            Windows[1]["flags"]["activation_key"] = EnumItem
+            return
         end
-        for _, EnumItem in pairs(Enum.KeyCode:GetEnumItems()) do
-            if string.lower(value) == string.lower(string.sub(EnumItem.Name, 1, string.len(value))) then
-                TextBox.Text = EnumItem.Name
-                Windows[1]["flags"]["activation_key"] = EnumItem
-                return
-            end
-        end
-        TextBox.Text = "LeftShift"
-        Windows[1]["flags"]["activation_key"] = Enum.KeyCode.LeftShift
     end
-)
+    for _, EnumItem in pairs(Enum.KeyCode:GetEnumItems()) do
+        if string.lower(value) == string.lower(string.sub(EnumItem.Name, 1, string.len(value))) then
+            TextBox.Text = EnumItem.Name
+            Windows[1]["flags"]["activation_key"] = EnumItem
+            return
+        end
+    end
+    TextBox.Text = "LeftShift"
+    Windows[1]["flags"]["activation_key"] = Enum.KeyCode.LeftShift
+end)
 TextBox.Text = "LeftShift"
 Windows[1]["flags"]["activation_key"] = Enum.KeyCode.LeftShift
 Slider = Windows[1]:Slider("Brake Force", {["flag"] = "brake_force", ["min"] = 0, ["max"] = 100})
