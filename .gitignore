@@ -1,0 +1,4 @@
+decompiled/
+.vscode/
+lib/*.rbxl
+lib/*.lock
