@@ -19,8 +19,10 @@ local httpget = fenv.httpget
 local wally
 
 if type(httpget) == 'function' then
-    if genv and genv.WallyUI ~= nil then
-        wally = genv.WallyUI
+    if genv then
+        local v = genv.ObbyScriptWindow
+        if v ~= nil then v.object:Destroy() end 
+        if genv.WallyUI ~= nil then wally = genv.WallyUI end
     else
         local s, r = pcall(httpget, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua')
         local f = if s then loadstring(r) else nil
@@ -72,7 +74,5 @@ local runstep; runstep = RunService.RenderStepped:Connect(function()
 end)
 
 if genv then
-	local v = genv.ObbyScriptWindow
-	if v ~= nil then v.object:Destroy() end
 	genv.ObbyScriptWindow = window
 end
