@@ -217,14 +217,16 @@ end
 					SortOrder = Enum.SortOrder.LayoutOrder })
 			})
 		})
+		newWindow.Destroying:Connect(function()
+			library.count -= 1
+		end)
 
 		local window = setmetatable({
 			count = 0;
 			object = newWindow;
 			container = newWindow.container;
 			toggled = true;
-			flags   = {};
-
+			flags = {}
 		}, types)
 
 		table.insert(library.queue, {

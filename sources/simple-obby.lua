@@ -13,15 +13,24 @@ local StageInt = LocalPlayer:WaitForChild('StageInt')
 local Spawns = workspace:WaitForChild('Spawns')
 
 local fenv = getfenv()
+local getgenv = fenv.getgenv
+local genv = if type(getgenv) == 'function' then getgenv() else nil
 local httpget = fenv.httpget
 local wally
 
 if type(httpget) == 'function' then
-	local s, r = pcall(httpget, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua')
-	local f = if s then loadstring(r) else nil
-	if type(f) == 'function' then
-		wally = f()
-	end
+    if genv and genv.WallyUI ~= nil then
+        wally = genv.WallyUI
+    else
+        local s, r = pcall(httpget, 'https://raw.githubusercontent.com/forka42/script-catalog/refs/heads/main/lib/wally-modified.lua')
+        local f = if s then loadstring(r) else nil
+        if type(f) == 'function' then
+            wally = f()
+            if genv then
+                genv.WallyUI = wally
+            end
+        end
+    end
 end
 
 local hui
@@ -30,17 +39,21 @@ if type(gethui) == 'function' then hui = gethui() else hui = game:GetService('Co
 if type(wally) ~= 'table' then return error('wally is missing or has moved') end
 
 local window = wally:CreateWindow('A Simple Obby', { Parent = hui })
-window:Label('Essentials')
+window:Label('<b>Essentials</b>', true)
 
 local AutoSkipStages = false
 window:Toggle('Auto Skip Stages', {
-    flag = AutoSkipStages
+	flag = AutoSkipStages
 }, function(v)
-    AutoSkipStages = v
+	AutoSkipStages = v
 end)
 
-RunService.RenderStepped:Connect(function()
-	if AutoSkipStages and typeof(window.object) == 'Instance' then
+local runstep; runstep = RunService.RenderStepped:Connect(function()
+	if typeof(window.object) ~= 'Instance' then
+		return runstep:Disconnect()
+	end
+
+	if AutoSkipStages then
 		local NextStage = Spawns:FindFirstChild(tostring(StageInt.Value + 1))
 		local Character = LocalPlayer.Character
 
@@ -54,4 +67,12 @@ RunService.RenderStepped:Connect(function()
 			end
 		end
 	end
+
+	return
 end)
+
+if genv then
+	local v = genv.ObbyScriptWindow
+	if v ~= nil then v.object:Destroy() end
+	genv.ObbyScriptWindow = window
+end
