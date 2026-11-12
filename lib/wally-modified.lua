@@ -283,13 +283,14 @@ end
 		return c
 	end
 
-	function types.Label(self: any, text: string)
+	function types.Label(self: any, text: string, rich: boolean)
 		local label = library:Create('TextLabel', {
 			Size = UDim2.new(1, 0, 1, 0);
 			Position = UDim2.new(0, 10, 0, 0);
 			LayoutOrder = self:GetOrder();
-			Text = text;
-			TextSize = 18;
+			Text = text,
+			TextSize = 18,
+			RichText = rich == true,
 			Font = Enum.Font.SourceSans;
 			TextColor3 = Color3.fromRGB(255, 255, 255);
 			BackgroundTransparency = 1;
