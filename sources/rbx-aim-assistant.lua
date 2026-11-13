@@ -99,19 +99,14 @@ local ffa = mysettings.ffa
 local fov = mysettings.fov
 local sens = mysettings.sens
 
-local function pick(v, fallback)
-    if v == nil then return fallback end
-    return v
-end
-
+local function pick(v, fallback) return if v then v else fallback end
 local function trysave(overrides)
     local payload = {
         aimbot = pick(overrides.aimbot, aimbot),
-        esp = pick(overrides.esp,    esp),
-        ffa = pick(overrides.ffa,    ffa),
-        fov = pick(overrides.fov,    fov),
-        sens = pick(overrides.sens,   sens)
-    }
+        esp = pick(overrides.esp, esp),
+        ffa = pick(overrides.ffa, ffa),
+        fov = pick(overrides.fov, fov),
+        sens = pick(overrides.sens, sens) }
     local ok, encoded = pcall(httpservice.JSONEncode, httpservice, payload)
     if not ok then return false end
     return (pcall(writefile, file, encoded)) and true or false
