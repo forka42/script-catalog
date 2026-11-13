@@ -2,20 +2,20 @@
     written by forka42
     ---
     https://github.com/forka42
+	universal(ish)
 ]=]
 
----@diagnostic disable: undefined-global
 math.randomseed(tick())
 
 local fenv = getfenv()
 if type(fenv.getgenv) ~= 'function' then
 	return
 end
+local genv = fenv.getgenv()
+local setclipboard = fenv.setclipboard
 
-local GlobalEnvironment = fenv.getgenv()
-local Players = game:GetService("Players")
-
-if type(GlobalEnvironment) == 'table' then
+if type(genv) == 'table' then
+	local Players = game:GetService('Players')
 	local LocalPlayer = Players.LocalPlayer
 	local InternalSettings = { 
 		UseVariablesAlways = false, -- coding preference for serialization xd
@@ -27,7 +27,7 @@ if type(GlobalEnvironment) == 'table' then
 	local Splix
 	if InternalSettings.LoadUI then
 		if InternalSettings.Development then
-			Splix = require(script:WaitForChild("Splix")); GlobalEnvironment.Splix = Splix
+			Splix = require(script:WaitForChild("Splix")); genv.Splix = Splix
 		else
 			local http_success, http_response = pcall(httpget, 'https://raw.githubusercontent.com/matas3535/SplixPrivateDrawingLibrary/main/Library.lua')
 			if http_success == true and type(http_response) == 'string' then
@@ -41,23 +41,11 @@ if type(GlobalEnvironment) == 'table' then
 
 	local hasclipboard = type(fenv.setclipboard) == 'function'
 
-	pcall(function() GlobalEnvironment.AC6F.GlitchConnection:Disconnect() end)
-	pcall(function() GlobalEnvironment.AC6F.HackConnection:Disconnect() end)
-	local AC6F = {}
-	if GlobalEnvironment.FireServer and type(fenv.hookfunction) == 'function' then
-		fenv.hookfunction(Instance.new("RemoteEvent").FireServer, GlobalEnvironment.FireServer)
-	end
-	GlobalEnvironment.FireServer = Instance.new("RemoteEvent").FireServer
-	GlobalEnvironment.AC6F = AC6F
+	pcall(function() genv.AC6F.GlitchConnection:Disconnect() end)
+	pcall(function() genv.AC6F.HackConnection:Disconnect() end)
 
-	local function rawgetall(a, t)
-		for i, v in pairs(t) do
-			if not rawget(a, v) then
-				return false
-			end
-		end
-		return true
-	end
+	local AC6F = {}
+	genv.AC6F = AC6F
 
 	local find = table.find
 
@@ -72,7 +60,7 @@ if type(GlobalEnvironment) == 'table' then
 			local i_type = typeof(i)
 			local v_type = typeof(v)
 			if i_type == 'string' then
-				if i_type == '__index' then
+				if i == '__index' then
 					continue
 				end
 				txt = txt .. '[\"' .. tostring(i) .. '\"] = '
@@ -134,63 +122,6 @@ if type(GlobalEnvironment) == 'table' then
 		return txt
 	end
 
-	local Drive
-	local function GetDrive()
-		for i, v in pairs(getscripts()) do
-			if v.Name == 'Drive' and v:FindFirstAncestorWhichIsA("PlayerGui") then
-				Drive = v
-				return v
-			end
-		end
-	end
-	local function GetDriveRegistry()
-		local r = {}
-		local drive = GetDrive()
-		for _, v in pairs(debug.getregistry()) do
-			if type(v) == 'function' then
-				local script = getfenv(v)['script']
-				if script == drive and script:FindFirstAncestorWhichIsA("PlayerGui") then
-					table.insert(r, v)
-				end
-			end
-		end
-		return r
-	end
-	local function GetDriveUpvalues()
-		local uvs = {}
-		for _, f in pairs(GetDriveRegistry()) do
-			for i, v in pairs(debug.getupvalues(f)) do
-				if not table.find(uvs, v) then
-					uvs[#uvs + 1] = v
-				end
-			end
-		end
-		return uvs
-	end
-	local function GetDriveContent()
-		local c = {}
-		for _, t in pairs(GetDriveUpvalues()) do
-			if type(t) == 'table' then
-				c[#c + 1] = t
-			end
-		end
-		return c
-	end
-
-	local MemoryConfiguration = {}
-
-	local function GetDriveConfiguration()
-		local c = select(2, pcall(GetDriveContent))
-		if type(c) == 'table' then
-			for _, t in pairs(GetDriveContent()) do
-				if rawgetall(t, {'PeakRPM', 'SusEnabled', 'Weight'}) then
-					return t
-				end
-			end
-		end
-		return MemoryConfiguration
-	end
-
 	local function GetSeatPart()
 		local SeatPart = select(2, pcall(function()
 			return LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").SeatPart
@@ -198,6 +129,7 @@ if type(GlobalEnvironment) == 'table' then
 		if type(SeatPart) ~= 'string' then
 			return SeatPart
 		end
+		return
 	end
 
 	local function GetVehicle()
@@ -205,9 +137,8 @@ if type(GlobalEnvironment) == 'table' then
 		if typeof(SeatPart) == 'Instance' and SeatPart:IsA("VehicleSeat") and SeatPart.Parent ~= workspace then
 			return SeatPart.Parent
 		end
+		return
 	end
-
-	local MemorySprings = {}
 
 	local function FindSurfaceType(Part, SurfaceType)
 		if typeof(Part) == 'Instance' and Part:IsA("BasePart") then
@@ -231,9 +162,10 @@ if type(GlobalEnvironment) == 'table' then
 			end
 			return Wheels
 		end
+		return
 	end
 
-	local function GetSprings()
+	local function _GetSprings() -- unused but may be used later
 		local Wheels = GetWheels() or {}
 		local Springs = {}
 		for _, Wheel in pairs(Wheels) do
@@ -245,16 +177,6 @@ if type(GlobalEnvironment) == 'table' then
 		return Springs
 	end
 
-	local function GetSoundRemote()
-		local Vehicle = GetVehicle()
-		if typeof(Vehicle) == 'Instance' and Vehicle:IsA("Model") then
-			local AC6_FE_Sounds = Vehicle:FindFirstChild("AC6_FE_Sounds")
-			if typeof(AC6_FE_Sounds) == 'Instance' and AC6_FE_Sounds:IsA("RemoteEvent") then
-				return AC6_FE_Sounds
-			end
-		end
-	end
-
 	local Pointers = Splix.pointers
 	local MainWindow
 	local HackConnection
@@ -263,10 +185,10 @@ if type(GlobalEnvironment) == 'table' then
 		local Window = Splix:New({
 			Name = 'AC6F'
 		}) do
-			local Page = Window:Page({
+			local GeneralPage = Window:Page({
 				Name = 'General'
 			}) do
-				local Section = Page:Section({
+				local Section = GeneralPage:Section({
 					Name = 'Driving (Network Universal)'
 				}) do
 					Section:Slider({
@@ -372,99 +294,11 @@ if type(GlobalEnvironment) == 'table' then
 						end,
 					})
 				end
-				local Section = Page:Section({
-					Name = 'Steering (AC6 Basic)',
-				}) do
-					Section:Slider({
-						Name = 'Speed',
-
-						Default = .07,
-						Minimum = 0,
-						Maximum = .1,
-						Decimals = .005,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerSpeed = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'Max Torque',
-
-						Default = 5e4,
-						Minimum = 0,
-						Maximum = 1e5,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerMaxTorque = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'P',
-
-						Default = 1e5,
-						Minimum = 0,
-						Maximum = 4e5,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerP = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'D',
-
-						Default = 1e3,
-						Minimum = 0,
-						Maximum = 4e3,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerD = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'Inner',
-
-						Default = 45,
-						Minimum = 0,
-						Maximum = 90,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerInner = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'Outer',
-
-						Default = 38,
-						Minimum = 0,
-						Maximum = 90,
-
-						Callback = function(X)
-							GetDriveConfiguration().SteerOuter = X
-						end,
-					})
-
-					Section:Slider({
-						Name = 'Min',
-
-						Default = 10,
-						Minimum = 0,
-						Maximum = 30,
-
-						Callback = function(X)
-							GetDriveConfiguration().MinSteer = X
-						end,
-					})
-				end
 			end
-			local Page = Window:Page({
+			local DeveloperPage = Window:Page({
 				Name = 'Developer',
 			}) do
-				local Section = Page:Section({
+				local Section = DeveloperPage:Section({
 					Name = 'Splix',
 				}) do
 					Section:Button({
@@ -477,39 +311,27 @@ if type(GlobalEnvironment) == 'table' then
 						end,
 					})
 				end
-				local Section = Page:Section({
-					Name = 'Debugging',
-				}) do
-					if hasclipboard then
-						Section:Button({
-							Name = 'Drive Configuration',
-							Callback = function()
-								setclipboard(serialize(GetDriveConfiguration()))
-							end
-						})
-					end
-				end
 			end
-			local Page = Window:Page({
+			local HelpPage = Window:Page({
 				Name = "Help (Please Read)",
 			}) do
-				local Section = Page:Section({
+				local Section = HelpPage:Section({
 					Name = 'Applying Settings',
 				}) do
 					Section:Label({Name = 'Some settings may require\nyou to exit and re-enter\nthe vehicle.\n\nThis is because the vehicle\nstores the values before\nactually using them.'})
 				end
 
-				local Section = Page:Section({
+				local ContributingSection = HelpPage:Section({
 					Name = 'Contributing',
 				}) do
-					Section:Label({Name = 'Feel free to contribute.' .. (function()
+					ContributingSection:Label({Name = 'Feel free to contribute.' .. (function()
 						if not hasclipboard then
 							return '\n\nhttps://github.com/forka42/legacy-scripts'
 						end
 						return ''
 					end)()})
 					if hasclipboard then
-						Section:Button({Name = 'GitHub Repository [Clipboard]', Callback = function()
+						ContributingSection:Button({Name = 'GitHub Repository [Clipboard]', Callback = function()
 							return setclipboard('https://github.com/forka42/legacy-scripts')
 						end,})
 					end
@@ -522,56 +344,5 @@ if type(GlobalEnvironment) == 'table' then
 
 	if MainWindow then
 		MainWindow:Initialize()
-	end
-
-	--- Searches the PlayerGui for the Drive script. If the script is found, it is returned.
-	function AC6F:GetDrive()
-		return GetDrive()
-	end
-
-	--- Retrieve all tables used for maintaining active vehicle.
-	function AC6F:GetDriveContent()
-		return GetDriveContent()
-	end
-
-	--- Get all functions used by Drive.
-	function AC6F:GetDriveRegistry()
-		return GetDriveRegistry()
-	end
-
-	--- Get all up-values in Drive registry.
-	function AC6F:GetDriveUpvalues()
-		return GetDriveUpvalues()
-	end
-
-	--- Get the configuration of the current vehicle.
-	function AC6F:GetDriveConfiguration()
-		return GetDriveConfiguration()
-	end
-
-	--- Create a new Sound object. If another sound with the same name is found, it is destroyed.
-	function AC6F:CreateSound(Name, Parent, SoundId, PlaybackSpeed, Volume, Looped)
-		local RemoteEvent = GetSoundRemote()
-		if typeof(RemoteEvent) == 'Instance' and RemoteEvent:IsA("RemoteEvent") then
-			return RemoteEvent:FireServer("newSound", Name, Parent, SoundId, PlaybackSpeed, Volume, Looped)
-		end
-	end
-
-	--- Play an existing sound.
-	function AC6F:PlaySound(Name)
-		local RemoteEvent = GetSoundRemote()
-		if typeof(RemoteEvent) == 'Instance' and RemoteEvent:IsA("RemoteEvent") then
-			return RemoteEvent:FireServer("playSound", Name)
-		end
-	end
-
-	--- Stop an existing sound.
-	--- @type function
-	--- @return nil
-	function AC6F:StopSound(Name)
-		local RemoteEvent = GetSoundRemote()
-		if typeof(RemoteEvent) == 'Instance' and RemoteEvent:IsA("RemoteEvent") then
-			return RemoteEvent:FireServer("stopSound", Name)
-		end
 	end
 end
