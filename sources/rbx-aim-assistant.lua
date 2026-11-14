@@ -55,13 +55,11 @@ local function clampnum(n, min, max, fallback)
 end
 
 local function sanitize(save)
-    return {
-        aimbot = save.aimbot == true,
+    return { aimbot = save.aimbot == true,
         esp = save.esp == true,
         ffa = save.ffa == true,
         fov = clampnum(save.fov, 1, 360, defaults.fov),
-        sens = clampnum(save.sens, 0.01, 1, defaults.sens)
-    }
+        sens = clampnum(save.sens, 0.01, 1, defaults.sens) }
 end
 
 local function write_defaults()
@@ -120,6 +118,8 @@ local ignoret = type(table.find({
 
 local v2 = Vector2.new
 local c3u = Color3.fromRGB
+local c3n = Color3.new
+local ud2 = UDim2.new
 local coregui = if type(fenv.gethui) then fenv.gethui() else game:GetService('CoreGui')
 
 local ui = make("ScreenGui")
@@ -132,269 +132,269 @@ insert(instances, ui)
 local ui_frame = make("Frame")
 ui_frame.Name = "ui_frame"
 ui_frame.AnchorPoint = Vector2.new(0.5, 0)
-ui_frame.BackgroundColor3 = Color3.new(0.176, 0.176, 0.176)
-ui_frame.Position = UDim2.new(0.5, 0, 0, 10)
-ui_frame.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
+ui_frame.BackgroundColor3 = c3n(0.176, 0.176, 0.176)
+ui_frame.Position = ud2(0.5, 0, 0, 10)
+ui_frame.BorderColor3 = c3n(0.125, 0.125, 0.125)
 ui_frame.BorderSizePixel = 3
-ui_frame.Size = UDim2.new(0, 300, 0, 140)
+ui_frame.Size = ud2(0, 300, 0, 140)
 ui_frame.Parent = ui
 
 local ui_domainlabel = make("TextLabel")
 ui_domainlabel.Name = "ui_domainlabel"
 ui_domainlabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_domainlabel.TextColor3 = Color3.new(1, 1, 1)
+ui_domainlabel.TextColor3 = c3n(1, 1, 1)
 ui_domainlabel.TextTransparency = 0.8
 ui_domainlabel.Text = "(c) 2022-2026 forka42"
-ui_domainlabel.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_domainlabel.BackgroundColor3 = c3n(1, 1, 1)
 ui_domainlabel.AnchorPoint = Vector2.new(0.5, 1)
 ui_domainlabel.BackgroundTransparency = 1
-ui_domainlabel.Position = UDim2.new(0.5, 0, 1, -5)
-ui_domainlabel.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_domainlabel.Position = ud2(0.5, 0, 1, -5)
+ui_domainlabel.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_domainlabel.TextYAlignment = Enum.TextYAlignment.Bottom
 ui_domainlabel.TextSize = 17
-ui_domainlabel.Size = UDim2.new(0, 125, 0, 17)
+ui_domainlabel.Size = ud2(0, 125, 0, 17)
 ui_domainlabel.Parent = ui_frame
 
 local ui_content = make("Frame")
 ui_content.Name = "ui_content"
 ui_content.BackgroundTransparency = 1
-ui_content.Position = UDim2.new(0, 0, 0, 25)
-ui_content.BorderColor3 = Color3.new(0.176, 0.176, 0.176)
-ui_content.BackgroundColor3 = Color3.new(1, 1, 1)
-ui_content.Size = UDim2.new(1, 0, 1, -25)
+ui_content.Position = ud2(0, 0, 0, 25)
+ui_content.BorderColor3 = c3n(0.176, 0.176, 0.176)
+ui_content.BackgroundColor3 = c3n(1, 1, 1)
+ui_content.Size = ud2(1, 0, 1, -25)
 ui_content.Parent = ui_frame
 
 local ui_sencontroller = make("Frame")
 ui_sencontroller.Name = "ui_sencontroller"
-ui_sencontroller.Position = UDim2.new(0, 222, 0, 40)
-ui_sencontroller.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_sencontroller.BackgroundColor3 = Color3.new(0.157, 0.157, 0.157)
-ui_sencontroller.Size = UDim2.new(0, 70, 0, 20)
+ui_sencontroller.Position = ud2(0, 222, 0, 40)
+ui_sencontroller.BorderColor3 = c3n(0.125, 0.125, 0.125)
+ui_sencontroller.BackgroundColor3 = c3n(0.157, 0.157, 0.157)
+ui_sencontroller.Size = ud2(0, 70, 0, 20)
 ui_sencontroller.Parent = ui_content
 
 local ui_label = make("TextLabel")
 ui_label.Name = "ui_label"
 ui_label.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json")
-ui_label.TextColor3 = Color3.new(1, 1, 1)
+ui_label.TextColor3 = c3n(1, 1, 1)
 ui_label.Text = "Sensitivity"
-ui_label.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_label.BackgroundColor3 = c3n(1, 1, 1)
 ui_label.BackgroundTransparency = 1
 ui_label.TextXAlignment = Enum.TextXAlignment.Right
-ui_label.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_label.Position = UDim2.new(-1, -40, 0, 0)
+ui_label.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_label.Position = ud2(-1, -40, 0, 0)
 ui_label.TextSize = 14
-ui_label.Size = UDim2.new(0, 100, 1, 0)
+ui_label.Size = ud2(0, 100, 1, 0)
 ui_label.Parent = ui_sencontroller
 
 local ui_senbox = make("TextBox")
 ui_senbox.Name = "ui_senbox"
 ui_senbox.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_senbox.TextColor3 = Color3.new(1, 1, 1)
-ui_senbox.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_senbox.TextColor3 = c3n(1, 1, 1)
+ui_senbox.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_senbox.Text = ""
 ui_senbox.BackgroundTransparency = 1
-ui_senbox.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_senbox.BackgroundColor3 = c3n(1, 1, 1)
 ui_senbox.PlaceholderText = "0.2"
 ui_senbox.TextSize = 14
-ui_senbox.Size = UDim2.new(1, 0, 1, 0)
+ui_senbox.Size = ud2(1, 0, 1, 0)
 ui_senbox.Parent = ui_sencontroller
 
 local ui_aimcontroller = make("Frame")
 ui_aimcontroller.Name = "ui_aimcontroller"
 ui_aimcontroller.BackgroundTransparency = 1
-ui_aimcontroller.Position = UDim2.new(0, 10, 0, 10)
-ui_aimcontroller.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_aimcontroller.BackgroundColor3 = Color3.new(1, 1, 1)
-ui_aimcontroller.Size = UDim2.new(0, 20, 0, 20)
+ui_aimcontroller.Position = ud2(0, 10, 0, 10)
+ui_aimcontroller.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_aimcontroller.BackgroundColor3 = c3n(1, 1, 1)
+ui_aimcontroller.Size = ud2(0, 20, 0, 20)
 ui_aimcontroller.Parent = ui_content
 
 local ui_label_2 = make("TextLabel")
 ui_label_2.Name = "ui_label"
 ui_label_2.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json")
-ui_label_2.TextColor3 = Color3.new(1, 1, 1)
+ui_label_2.TextColor3 = c3n(1, 1, 1)
 ui_label_2.Text = "Aimbot"
-ui_label_2.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_label_2.BackgroundColor3 = c3n(1, 1, 1)
 ui_label_2.BackgroundTransparency = 1
 ui_label_2.TextXAlignment = Enum.TextXAlignment.Left
-ui_label_2.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_label_2.Position = UDim2.new(1, 5, 0, 0)
+ui_label_2.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_label_2.Position = ud2(1, 5, 0, 0)
 ui_label_2.TextSize = 14
-ui_label_2.Size = UDim2.new(0, 100, 1, 0)
+ui_label_2.Size = ud2(0, 100, 1, 0)
 ui_label_2.Parent = ui_aimcontroller
 
 local ui_aimbutton = make("ImageButton")
 ui_aimbutton.Name = "ui_aimbutton"
 ui_aimbutton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-ui_aimbutton.BackgroundColor3 = Color3.new(0.157, 0.157, 0.157)
+ui_aimbutton.BackgroundColor3 = c3n(0.157, 0.157, 0.157)
 ui_aimbutton.ImageTransparency = 1
-ui_aimbutton.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_aimbutton.Size = UDim2.new(1, 0, 1, 0)
+ui_aimbutton.BorderColor3 = c3n(0.125, 0.125, 0.125)
+ui_aimbutton.Size = ud2(1, 0, 1, 0)
 ui_aimbutton.Parent = ui_aimcontroller
 
 local ui_aimcheck = make("TextLabel")
 ui_aimcheck.Name = "ui_aimcheck"
 ui_aimcheck.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_aimcheck.TextColor3 = Color3.new(1, 1, 1)
-ui_aimcheck.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_aimcheck.TextColor3 = c3n(1, 1, 1)
+ui_aimcheck.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_aimcheck.Text = "✓"
 ui_aimcheck.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_aimcheck.BackgroundTransparency = 1
-ui_aimcheck.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_aimcheck.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_aimcheck.Position = ud2(0.5, 0, 0.5, 0)
+ui_aimcheck.BackgroundColor3 = c3n(1, 1, 1)
 ui_aimcheck.TextSize = 16
-ui_aimcheck.Size = UDim2.new(1, -5, 1, -5)
+ui_aimcheck.Size = ud2(1, -5, 1, -5)
 ui_aimcheck.Parent = ui_aimbutton
 
 local ui_ffacontroller = make("Frame")
 ui_ffacontroller.Name = "ui_ffacontroller"
 ui_ffacontroller.BackgroundTransparency = 1
-ui_ffacontroller.Position = UDim2.new(0, 10, 0, 70)
-ui_ffacontroller.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_ffacontroller.BackgroundColor3 = Color3.new(1, 1, 1)
-ui_ffacontroller.Size = UDim2.new(0, 20, 0, 20)
+ui_ffacontroller.Position = ud2(0, 10, 0, 70)
+ui_ffacontroller.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_ffacontroller.BackgroundColor3 = c3n(1, 1, 1)
+ui_ffacontroller.Size = ud2(0, 20, 0, 20)
 ui_ffacontroller.Parent = ui_content
 
 local ui_label_3 = make("TextLabel")
 ui_label_3.Name = "ui_label"
 ui_label_3.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json")
-ui_label_3.TextColor3 = Color3.new(1, 1, 1)
+ui_label_3.TextColor3 = c3n(1, 1, 1)
 ui_label_3.Text = "FFA"
-ui_label_3.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_label_3.BackgroundColor3 = c3n(1, 1, 1)
 ui_label_3.BackgroundTransparency = 1
 ui_label_3.TextXAlignment = Enum.TextXAlignment.Left
-ui_label_3.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_label_3.Position = UDim2.new(1, 5, 0, 0)
+ui_label_3.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_label_3.Position = ud2(1, 5, 0, 0)
 ui_label_3.TextSize = 14
-ui_label_3.Size = UDim2.new(0, 100, 1, 0)
+ui_label_3.Size = ud2(0, 100, 1, 0)
 ui_label_3.Parent = ui_ffacontroller
 
 local ui_ffabutton = make("ImageButton")
 ui_ffabutton.Name = "ui_ffabutton"
 ui_ffabutton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-ui_ffabutton.BackgroundColor3 = Color3.new(0.157, 0.157, 0.157)
+ui_ffabutton.BackgroundColor3 = c3n(0.157, 0.157, 0.157)
 ui_ffabutton.ImageTransparency = 1
-ui_ffabutton.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_ffabutton.Size = UDim2.new(1, 0, 1, 0)
+ui_ffabutton.BorderColor3 = c3n(0.125, 0.125, 0.125)
+ui_ffabutton.Size = ud2(1, 0, 1, 0)
 ui_ffabutton.Parent = ui_ffacontroller
 
 local ui_ffacheck = make("TextLabel")
 ui_ffacheck.Name = "ui_ffacheck"
 ui_ffacheck.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_ffacheck.TextColor3 = Color3.new(1, 1, 1)
-ui_ffacheck.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_ffacheck.TextColor3 = c3n(1, 1, 1)
+ui_ffacheck.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_ffacheck.Text = "✓"
 ui_ffacheck.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_ffacheck.BackgroundTransparency = 1
-ui_ffacheck.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_ffacheck.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_ffacheck.Position = ud2(0.5, 0, 0.5, 0)
+ui_ffacheck.BackgroundColor3 = c3n(1, 1, 1)
 ui_ffacheck.TextSize = 16
-ui_ffacheck.Size = UDim2.new(1, -5, 1, -5)
+ui_ffacheck.Size = ud2(1, -5, 1, -5)
 ui_ffacheck.Parent = ui_ffabutton
 
 local ui_espcontroller = make("Frame")
 ui_espcontroller.Name = "ui_espcontroller"
 ui_espcontroller.BackgroundTransparency = 1
-ui_espcontroller.Position = UDim2.new(0, 10, 0, 40)
-ui_espcontroller.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_espcontroller.BackgroundColor3 = Color3.new(1, 1, 1)
-ui_espcontroller.Size = UDim2.new(0, 20, 0, 20)
+ui_espcontroller.Position = ud2(0, 10, 0, 40)
+ui_espcontroller.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_espcontroller.BackgroundColor3 = c3n(1, 1, 1)
+ui_espcontroller.Size = ud2(0, 20, 0, 20)
 ui_espcontroller.Parent = ui_content
 
 local ui_espbutton = make("ImageButton")
 ui_espbutton.Name = "ui_espbutton"
 ui_espbutton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-ui_espbutton.BackgroundColor3 = Color3.new(0.157, 0.157, 0.157)
+ui_espbutton.BackgroundColor3 = c3n(0.157, 0.157, 0.157)
 ui_espbutton.ImageTransparency = 1
-ui_espbutton.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_espbutton.Size = UDim2.new(1, 0, 1, 0)
+ui_espbutton.BorderColor3 = c3n(0.125, 0.125, 0.125)
+ui_espbutton.Size = ud2(1, 0, 1, 0)
 ui_espbutton.Parent = ui_espcontroller
 
 local ui_espcheck = make("TextLabel")
 ui_espcheck.Name = "ui_espcheck"
 ui_espcheck.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_espcheck.TextColor3 = Color3.new(1, 1, 1)
-ui_espcheck.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_espcheck.TextColor3 = c3n(1, 1, 1)
+ui_espcheck.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_espcheck.Text = "✓"
 ui_espcheck.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_espcheck.BackgroundTransparency = 1
-ui_espcheck.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_espcheck.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_espcheck.Position = ud2(0.5, 0, 0.5, 0)
+ui_espcheck.BackgroundColor3 = c3n(1, 1, 1)
 ui_espcheck.TextSize = 16
-ui_espcheck.Size = UDim2.new(1, -5, 1, -5)
+ui_espcheck.Size = ud2(1, -5, 1, -5)
 ui_espcheck.Parent = ui_espbutton
 
 local ui_label_4 = make("TextLabel")
 ui_label_4.Name = "ui_label"
 ui_label_4.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json")
-ui_label_4.TextColor3 = Color3.new(1, 1, 1)
+ui_label_4.TextColor3 = c3n(1, 1, 1)
 ui_label_4.Text = "ESP"
-ui_label_4.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_label_4.BackgroundColor3 = c3n(1, 1, 1)
 ui_label_4.BackgroundTransparency = 1
 ui_label_4.TextXAlignment = Enum.TextXAlignment.Left
-ui_label_4.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_label_4.Position = UDim2.new(1, 5, 0, 0)
+ui_label_4.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_label_4.Position = ud2(1, 5, 0, 0)
 ui_label_4.TextSize = 14
-ui_label_4.Size = UDim2.new(0, 100, 1, 0)
+ui_label_4.Size = ud2(0, 100, 1, 0)
 ui_label_4.Parent = ui_espcontroller
 
 local ui_fovcontroller = make("Frame")
 ui_fovcontroller.Name = "ui_fovcontroller"
-ui_fovcontroller.Position = UDim2.new(0, 222, 0, 10)
-ui_fovcontroller.BorderColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_fovcontroller.BackgroundColor3 = Color3.new(0.157, 0.157, 0.157)
-ui_fovcontroller.Size = UDim2.new(0, 70, 0, 20)
+ui_fovcontroller.Position = ud2(0, 222, 0, 10)
+ui_fovcontroller.BorderColor3 = c3n(0.125, 0.125, 0.125)
+ui_fovcontroller.BackgroundColor3 = c3n(0.157, 0.157, 0.157)
+ui_fovcontroller.Size = ud2(0, 70, 0, 20)
 ui_fovcontroller.Parent = ui_content
 
 local ui_label_5 = make("TextLabel")
 ui_label_5.Name = "ui_label"
 ui_label_5.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json")
-ui_label_5.TextColor3 = Color3.new(1, 1, 1)
+ui_label_5.TextColor3 = c3n(1, 1, 1)
 ui_label_5.Text = "FOV"
-ui_label_5.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_label_5.BackgroundColor3 = c3n(1, 1, 1)
 ui_label_5.BackgroundTransparency = 1
 ui_label_5.TextXAlignment = Enum.TextXAlignment.Right
-ui_label_5.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_label_5.Position = UDim2.new(-1, -40, 0, 0)
+ui_label_5.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_label_5.Position = ud2(-1, -40, 0, 0)
 ui_label_5.TextSize = 14
-ui_label_5.Size = UDim2.new(0, 100, 1, 0)
+ui_label_5.Size = ud2(0, 100, 1, 0)
 ui_label_5.Parent = ui_fovcontroller
 
 local ui_fovbox = make("TextBox")
 ui_fovbox.Name = "ui_fovbox"
 ui_fovbox.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_fovbox.TextColor3 = Color3.new(1, 1, 1)
-ui_fovbox.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_fovbox.TextColor3 = c3n(1, 1, 1)
+ui_fovbox.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_fovbox.Text = ""
 ui_fovbox.BackgroundTransparency = 1
-ui_fovbox.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_fovbox.BackgroundColor3 = c3n(1, 1, 1)
 ui_fovbox.PlaceholderText = "4"
 ui_fovbox.TextSize = 14
-ui_fovbox.Size = UDim2.new(1, 0, 1, 0)
+ui_fovbox.Size = ud2(1, 0, 1, 0)
 ui_fovbox.Parent = ui_fovcontroller
 
 local ui_versionlabel = make("TextLabel")
 ui_versionlabel.Name = "ui_versionlabel"
 ui_versionlabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json")
-ui_versionlabel.TextColor3 = Color3.new(1, 1, 1)
+ui_versionlabel.TextColor3 = c3n(1, 1, 1)
 ui_versionlabel.TextTransparency = 0.8
 ui_versionlabel.Text = "[2.0.0]"
-ui_versionlabel.BackgroundColor3 = Color3.new(1, 1, 1)
-ui_versionlabel.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_versionlabel.BackgroundColor3 = c3n(1, 1, 1)
+ui_versionlabel.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_versionlabel.AnchorPoint = Vector2.new(1, 0)
-ui_versionlabel.Position = UDim2.new(1, 0, 0, 0)
+ui_versionlabel.Position = ud2(1, 0, 0, 0)
 ui_versionlabel.BackgroundTransparency = 1
 ui_versionlabel.TextXAlignment = Enum.TextXAlignment.Right
 ui_versionlabel.TextYAlignment = Enum.TextYAlignment.Bottom
 ui_versionlabel.TextSize = 14
-ui_versionlabel.Size = UDim2.new(0, 100, 0, 15)
+ui_versionlabel.Size = ud2(0, 100, 0, 15)
 ui_versionlabel.Parent = ui_frame
 
 local ui_topbar = make("Frame")
 ui_topbar.Name = "ui_topbar"
-ui_topbar.BackgroundColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_topbar.BorderColor3 = Color3.new(0.176, 0.176, 0.176)
+ui_topbar.BackgroundColor3 = c3n(0.125, 0.125, 0.125)
+ui_topbar.BorderColor3 = c3n(0.176, 0.176, 0.176)
 ui_topbar.BorderSizePixel = 0
-ui_topbar.Size = UDim2.new(1, 0, 0, 25)
+ui_topbar.Size = ud2(1, 0, 0, 25)
 ui_topbar.Parent = ui_frame
 
 local ui_topbarlabel = make("TextLabel")
@@ -404,43 +404,43 @@ ui_topbarlabel.FontFace = Font.new(
 	Enum.FontWeight.Medium,
 	Enum.FontStyle.Normal
 )
-ui_topbarlabel.TextColor3 = Color3.new(1, 1, 1)
-ui_topbarlabel.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
+ui_topbarlabel.TextColor3 = c3n(1, 1, 1)
+ui_topbarlabel.BorderColor3 = c3n(0.106, 0.165, 0.208)
 ui_topbarlabel.Text = "Aim Assistant"
 ui_topbarlabel.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_topbarlabel.BackgroundTransparency = 1
-ui_topbarlabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_topbarlabel.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_topbarlabel.Position = ud2(0.5, 0, 0.5, 0)
+ui_topbarlabel.BackgroundColor3 = c3n(1, 1, 1)
 ui_topbarlabel.TextSize = 20
-ui_topbarlabel.Size = UDim2.new(1, 0, 1, 0)
+ui_topbarlabel.Size = ud2(1, 0, 1, 0)
 ui_topbarlabel.Parent = ui_topbar
 
 local ui_circle = make("Frame")
 ui_circle.Name = "ui_circle"
 ui_circle.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_circle.BackgroundTransparency = 0.9
-ui_circle.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_circle.BackgroundColor3 = Color3.new(0.125, 0.125, 0.125)
-ui_circle.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_circle.Size = UDim2.new(0, 200, 0, 200)
+ui_circle.Position = ud2(0.5, 0, 0.5, 0)
+ui_circle.BackgroundColor3 = c3n(0.125, 0.125, 0.125)
+ui_circle.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_circle.Size = ud2(0, 200, 0, 200)
 ui_circle.Parent = ui
 
 local ui_circle_line = make("Frame")
 ui_circle_line.Name = "ui_circle_line"
 ui_circle_line.AnchorPoint = Vector2.new(0.5, 0.5)
-ui_circle_line.BackgroundColor3 = Color3.new()
+ui_circle_line.BackgroundColor3 = c3n()
 ui_circle_line.BackgroundTransparency = 0.8
-ui_circle_line.Position = UDim2.new(0.5, 0, 0.5, 0)
+ui_circle_line.Position = ud2(0.5, 0, 0.5, 0)
 ui_circle_line.Rotation = 315
 ui_circle_line.BorderSizePixel = 0
-ui_circle_line.Size = UDim2.new(0, 1, 0.5, 0)
+ui_circle_line.Size = ud2(0, 1, 0.5, 0)
 ui_circle_line.Parent = ui_circle
 
 local ui_circle_stroke = make("UIStroke")
 ui_circle_stroke.Name = "ui_circle_stroke"
 ui_circle_stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 ui_circle_stroke.Transparency = 0.8
-ui_circle_stroke.Color = Color3.new(0.125, 0.125, 0.125)
+ui_circle_stroke.Color = c3n(0.125, 0.125, 0.125)
 ui_circle_stroke.Thickness = 2
 ui_circle_stroke.Parent = ui_circle
 
@@ -448,31 +448,31 @@ local ui_circle_line_2 = make("Frame")
 ui_circle_line_2.Name = "ui_circle_line"
 ui_circle_line_2.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_circle_line_2.BackgroundTransparency = 0.8
-ui_circle_line_2.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_circle_line_2.BackgroundColor3 = Color3.new()
+ui_circle_line_2.Position = ud2(0.5, 0, 0.5, 0)
+ui_circle_line_2.BackgroundColor3 = c3n()
 ui_circle_line_2.BorderSizePixel = 0
-ui_circle_line_2.Size = UDim2.new(0, 1, 1, 0)
+ui_circle_line_2.Size = ud2(0, 1, 1, 0)
 ui_circle_line_2.Parent = ui_circle
 
 local ui_circle_line_3 = make("Frame")
 ui_circle_line_3.Name = "ui_circle_line"
 ui_circle_line_3.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_circle_line_3.BackgroundTransparency = 0.8
-ui_circle_line_3.Position = UDim2.new(0.5, 0, 0.5, 0)
-ui_circle_line_3.BackgroundColor3 = Color3.new()
+ui_circle_line_3.Position = ud2(0.5, 0, 0.5, 0)
+ui_circle_line_3.BackgroundColor3 = c3n()
 ui_circle_line_3.BorderSizePixel = 0
-ui_circle_line_3.Size = UDim2.new(1, 0, 0, 1)
+ui_circle_line_3.Size = ud2(1, 0, 0, 1)
 ui_circle_line_3.Parent = ui_circle
 
 local ui_circle_line_4 = make("Frame")
 ui_circle_line_4.Name = "ui_circle_line"
 ui_circle_line_4.AnchorPoint = Vector2.new(0.5, 0.5)
-ui_circle_line_4.BackgroundColor3 = Color3.new()
+ui_circle_line_4.BackgroundColor3 = c3n()
 ui_circle_line_4.BackgroundTransparency = 0.8
-ui_circle_line_4.Position = UDim2.new(0.5, 0, 0.5, 0)
+ui_circle_line_4.Position = ud2(0.5, 0, 0.5, 0)
 ui_circle_line_4.Rotation = 45
 ui_circle_line_4.BorderSizePixel = 0
-ui_circle_line_4.Size = UDim2.new(0, 1, 0.5, 0)
+ui_circle_line_4.Size = ud2(0, 1, 0.5, 0)
 ui_circle_line_4.Parent = ui_circle
 
 local ui_circle_corner = make("UICorner")
@@ -482,14 +482,14 @@ ui_circle_corner.Parent = ui_circle
 
 local ui_circle_img = make("ImageLabel")
 ui_circle_img.Name = "ui_circle_img"
-ui_circle_img.BorderColor3 = Color3.new(0.106, 0.165, 0.208)
-ui_circle_img.BackgroundColor3 = Color3.new(1, 1, 1)
+ui_circle_img.BorderColor3 = c3n(0.106, 0.165, 0.208)
+ui_circle_img.BackgroundColor3 = c3n(1, 1, 1)
 ui_circle_img.AnchorPoint = Vector2.new(0.5, 0.5)
 ui_circle_img.Image = "rbxassetid://7254289048"
 ui_circle_img.BackgroundTransparency = 1
-ui_circle_img.Position = UDim2.new(0.5, 0, 0.5, 0)
+ui_circle_img.Position = ud2(0.5, 0, 0.5, 0)
 ui_circle_img.ZIndex = 2
-ui_circle_img.Size = UDim2.new(0, 200, 0, 200)
+ui_circle_img.Size = ud2(0, 200, 0, 200)
 ui_circle_img.Parent = ui_circle
 
 ui_aimcheck.Text = aimbot and check or blank
@@ -617,7 +617,7 @@ spawn(function()
 
     local function update(input)
         local delta = input.Position - dragstart
-        ui_frame.Position = UDim2.new(startpos.X.Scale, startpos.X.Offset + delta.X, startpos.Y.Scale,
+        ui_frame.Position = ud2(startpos.X.Scale, startpos.X.Offset + delta.X, startpos.Y.Scale,
             startpos.Y.Offset + delta.Y)
     end
 
@@ -658,8 +658,8 @@ connect(ui_fovbox.FocusLost, function(enter_pressed)
     if not enter_pressed then return end
     local number = clampnum(ui_fovbox.Text, 1, 360, fov)
     if not trysave({ fov = number }) then
-        ui_fovbox.TextColor3 = Color3.new(1, 0.3, 0.3)
-        task.delay(1, function() ui_fovbox.TextColor3 = Color3.new(1, 1, 1) end)
+        ui_fovbox.TextColor3 = c3n(1, 0.3, 0.3)
+        task.delay(1, function() ui_fovbox.TextColor3 = c3n(1, 1, 1) end)
         return
     end
     fov = number
@@ -670,8 +670,8 @@ connect(ui_senbox.FocusLost, function(enter_pressed)
     if not enter_pressed then return end
     local number = clampnum(ui_senbox.Text, 0.01, 1, sens)
     if not trysave({ sens = number }) then
-        ui_senbox.TextColor3 = Color3.new(1, 0.3, 0.3)
-        task.delay(1, function() ui_senbox.TextColor3 = Color3.new(1, 1, 1) end)
+        ui_senbox.TextColor3 = c3n(1, 0.3, 0.3)
+        task.delay(1, function() ui_senbox.TextColor3 = c3n(1, 1, 1) end)
         return
     end
     sens = number
@@ -885,7 +885,7 @@ end)
 coroutine.resume(coroutine.create(function(dragging, drag_input, drag_start, start_position)
     local function update(input)
         local delta = input.Position - drag_start
-        ui_frame.Position = UDim2.new(start_position.X.Scale, start_position.X.Offset + delta.X, start_position.Y.Scale,
+        ui_frame.Position = ud2(start_position.X.Scale, start_position.X.Offset + delta.X, start_position.Y.Scale,
             start_position.Y.Offset + delta.Y)
     end
     connect(ui_frame.InputBegan, function(input)
@@ -960,8 +960,8 @@ local mousemoverel = genv.mousemoverel
 connect(ui_ffabutton.MouseButton1Up, function()
     local newvalue = not ffa
     if not trysave({ ffa = newvalue }) then
-        ui_ffacheck.TextColor3 = Color3.new(1, 0.3, 0.3)
-        task.delay(1, function() ui_ffacheck.TextColor3 = Color3.new(1, 1, 1) end)
+        ui_ffacheck.TextColor3 = c3n(1, 0.3, 0.3)
+        task.delay(1, function() ui_ffacheck.TextColor3 = c3n(1, 1, 1) end)
         return
     end
     ffa = newvalue
@@ -974,8 +974,8 @@ end)
 connect(ui_espbutton.MouseButton1Up, function()
     local newvalue = not esp
     if not trysave({ esp = newvalue }) then
-        ui_espcheck.TextColor3 = Color3.new(1, 0.3, 0.3)
-        task.delay(1, function() ui_espcheck.TextColor3 = Color3.new(1, 1, 1) end)
+        ui_espcheck.TextColor3 = c3n(1, 0.3, 0.3)
+        task.delay(1, function() ui_espcheck.TextColor3 = c3n(1, 1, 1) end)
         return
     end
     esp = newvalue
@@ -988,8 +988,8 @@ end)
 connect(ui_aimbutton.MouseButton1Up, function()
     local newvalue = not aimbot
     if not trysave({ aimbot = newvalue }) then
-        ui_aimcheck.TextColor3 = Color3.new(1, 0.3, 0.3)
-        task.delay(1, function() ui_aimcheck.TextColor3 = Color3.new(1, 1, 1) end)
+        ui_aimcheck.TextColor3 = c3n(1, 0.3, 0.3)
+        task.delay(1, function() ui_aimcheck.TextColor3 = c3n(1, 1, 1) end)
         return
     end
     aimbot = newvalue
